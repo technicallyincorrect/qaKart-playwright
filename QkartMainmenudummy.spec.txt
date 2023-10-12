@@ -1,0 +1,37 @@
+import {test, expect} from '@playwright/test'
+import LoginPage from '../../pages/loginPage';
+import { readCredentialsFromTOM } from '../../utils/config';
+test ('Order', async({page})=> {
+    const loginPage = new LoginPage(page);
+
+    const{username,password} = readCredentialsFromTOM();
+    
+    await loginPage.navigate()
+    await loginPage.fillUsername(username)
+    await loginPage.fillPassword(password)
+
+    await loginPage.loginButton()
+
+    //shoe size change
+    await page.locator('div').filter({ hasText: /^Roadster Mens Running Shoes\$30Size chartSize678910Add to cart$/ }).getByRole('button').nth(1).click();
+    //add connector
+    await page.locator('div').filter({ hasText: /^Connector\$80Add to cart$/ }).getByRole('button').click();
+    //next page
+    await page.getByLabel('Go to page 2').click();
+    //add router
+    await page.locator('div').filter({ hasText: /^Router\$60Add to cart$/ }).getByRole('button').click();
+    //checkout
+    await page.getByRole('button', { name: 'Checkout' }).click();
+    //page changes to checkout 
+    //add address
+    await page.getByRole('button', { name: 'Add new address' }).click();
+    await page.getByPlaceholder('Enter your complete address').click();
+    await page.getByPlaceholder('Enter your complete address').fill('admin 1234, bangalore.');
+    //place order
+    await page.getByRole('button', { name: 'Add' }).click();
+    //
+    await page.getByRole('radio').check();
+    await page.getByRole('button', { name: 'PLACE ORDER' }).click();
+    //thankyou page
+    await page.getByRole('button', { name: 'Continue Shopping' }).click();
+})

@@ -1,0 +1,1 @@
+https://crio-qkart-frontend-qa.vercel.app/checkout -- checkout page link
